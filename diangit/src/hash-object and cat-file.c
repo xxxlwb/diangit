@@ -28,7 +28,7 @@ size_t create_git_object(const unsigned char *data, size_t length, unsigned char
     }
 
     unsigned char *p = *output;
-    p += sprintf((char *)p, "%s %zu", type, length);
+    p += sprintf((char *)p, "%s %zu:", type, length);
     memcpy(p, data, length);
 
     return total_len;
@@ -95,7 +95,7 @@ void Hash_object(const char *filename) {
     calculate_sha1(data, file_size, sha1_hash);
 
     // 转换哈希为字符串
-    char hash_str[41];
+    char hash_str[1024];
     for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
         sprintf(hash_str + (i * 2), "%02x", sha1_hash[i]);
     }
@@ -125,6 +125,8 @@ int decompress_object(const char *object_path, unsigned char **output, size_t *o
     long compressed_size = ftell(file);
     fseek(file, 0, SEEK_SET);
 
+    printf("压缩文件大小: %ld\n", compressed_size);
+
     unsigned char *compressed_data = (unsigned char *)malloc(compressed_size);
     if (!compressed_data) {
         fprintf(stderr, "内存分配失败\n");
@@ -145,11 +147,20 @@ int decompress_object(const char *object_path, unsigned char **output, size_t *o
         return -1;
     }
 
+   printf("解压后数据大小: %zu\n", decompressed_size);
+    // 打印解压后的前100字节数据
+    printf("解压后数据前100字节: ");
+    for (size_t i = 0; i < decompressed_size && i < 100; ++i) {
+        printf("%02X ", (*output)[i]);
+    }
+    printf("\n");
+
     free(compressed_data);
     *output_len = decompressed_size;
     return 0;
 }
 
+// cat-file 命令
 void Cat_file(const char *hash_str) {
     char object_path[1024];
     snprintf(object_path, sizeof(object_path), ".git/objects/%.2s/%s", hash_str, hash_str + 2);
@@ -163,21 +174,18 @@ void Cat_file(const char *hash_str) {
     if (decompress_object(object_path, &decompressed_data, &decompressed_size) == 0) {
         // 确保 decompressed_data 非空并且 size 正确
         if (decompressed_data) {
-            unsigned char *content = memchr(decompressed_data, '\0', decompressed_size);
+            printf("解压后数据大小: %zu\n", decompressed_size);
+            unsigned char *content = (unsigned char *)memchr(decompressed_data, ':', decompressed_size);
             if (content) {
-                content++; // 跳过类型头和大小信息
+                printf("头部信息: %.*s\n", (int)(content - decompressed_data), (const char *)decompressed_data);
+
+                content++; // 跳过冒号
                 size_t content_size = decompressed_size - (content - decompressed_data);
                 fwrite(content, 1, content_size, stdout);
                 printf("\n");
-            } else {
-                fprintf(stderr, "未找到内容分隔符\n");
-            }
-        } else {
-            fprintf(stderr, "解压缩数据为空\n");
-        }
-    } else {
-        fprintf(stderr, "无法解压缩对象文件\n");
-    }
+            } 
+        } 
+    } 
 
     free(decompressed_data);
 }
