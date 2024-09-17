@@ -14,6 +14,8 @@ typedef enum {
     init,
     hash_object,
     cat_file,
+    commit,
+    logs,
     unknown
 } Command;
 
@@ -30,6 +32,10 @@ Command parse_args(int argc, char *argv[]) {
         return hash_object;
     } else if (strcmp(argv[1], "cat-file") == 0) {
         return cat_file;
+    } else if (strcmp(argv[1], "commit") == 0) {
+        return commit;
+    } else if (strcmp(argv[1], "log") == 0) {
+        return logs;
     }
 
     fprintf(stderr, "未知命令: %s\n", argv[1]);
@@ -62,6 +68,17 @@ int main(int argc, char *argv[]) {
             }
             Cat_file(argv[2]);
             break;
+        case commit:
+             if (argc < 4 || strcmp(argv[2], "-m") != 0) {
+                fprintf(stderr, "错误: 需要提供提交信息\n");
+                return EXIT_FAILURE;
+            }
+            commit_(argv[3], "./"); // 提交所有文件
+            break;
+        case logs:
+            log_history("./"); // 默认为当前目录
+            break;
+
 
         case unknown:
             return EXIT_FAILURE;
