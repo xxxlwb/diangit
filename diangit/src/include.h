@@ -19,3 +19,4 @@ void log_history(const char *repo_dir);//输出日志文件中的每一行
  
 void commit_(const char *message, const char *repo_dir);//生成提交对象并写入对象目录
 
+void Checkout(const char *commit_hash);//checkout 命令

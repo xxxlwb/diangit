@@ -44,7 +44,7 @@ void calculate_sha1(const unsigned char *data, unsigned char *hash) {
      SHA1(data, strlen((char *)data), hash);//计算哈希值
 }
 
-// 创建 Git 对象格式
+// 创建 Git 对象格式(blob)
 size_t create_git_object(const unsigned char *data, unsigned char **output) {
     size_t length = strlen((char *)data);
     const char *type = "blob";
@@ -75,7 +75,12 @@ int compress_and_store(const char *hash_str, const unsigned char *data) {
     uLongf compressed_length = compressBound(length);//计算压缩后的长度,compressBound()函数用于计算压缩后的长度
     unsigned char *compressed_data = (unsigned char *)malloc(compressed_length);//分配内存
 
-    compress(compressed_data, &compressed_length, data, length);//压缩数据,compress()函数用于压缩数据,
+   if (compress(compressed_data, &compressed_length, data, length) != Z_OK) {
+        fprintf(stderr, "数据压缩失败\n");
+        free(compressed_data);
+        fclose(file);
+        return -1;
+    } //压缩数据,compress()函数用于压缩数据,压缩到缓冲区compressed_data
        
     fwrite(compressed_data, 1, compressed_length, file);
     fclose(file);
@@ -99,7 +104,7 @@ void Hash_object(const char *filename) {
     printf("文件哈希值: %s\n", hash_str);
 
     // 创建 Git 对象格式
-    unsigned char *git_object_data;
+    unsigned char *git_object_data=NULL;
     size_t total_len = create_git_object(data, &git_object_data);//创建Git对象格式
     if (compress_and_store(hash_str, git_object_data) == -1) {//压缩并存储对象
         perror("压缩和存储失败");
@@ -129,7 +134,7 @@ int decompress_object(const char *object_path, unsigned char **output, size_t *o
     uLongf decompressed_size = 1024 * 1024; // 初始分配解压后大小
     *output = (unsigned char *)malloc(decompressed_size);
 
-    if (uncompress(*output, &decompressed_size, compressed_data, compressed_size) != Z_OK) {
+    if (uncompress(*output, &decompressed_size, compressed_data, compressed_size) != Z_OK) {//将compressed_data解压到output
         fprintf(stderr, "数据解压失败\n");
         free(compressed_data);
         return -1;
@@ -167,9 +172,9 @@ void Cat_file(const char *hash_str) {
             if (content) {
                 printf("头部信息: %.*s\n", (int)(content - decompressed_data), (const char *)decompressed_data);
 
-                content++; // 跳过冒号
-                size_t content_size = decompressed_size - (content - decompressed_data);
-                fwrite(content, 1, content_size, stdout);
+                content++; // 跳过头部信息和冒号
+                size_t content_size = decompressed_size - (content - decompressed_data);//
+                fwrite(content, 1, content_size, stdout);//输出文本内容
                 printf("\n");
             } 
         } 
