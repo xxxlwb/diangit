@@ -93,6 +93,17 @@ int compress_and_store(const char *hash_str, const unsigned char *data) {
 void Hash_object(const char *filename) {
    
     unsigned char *data = get_file_data(filename);//获取文件数据
+/**
+ * @brief 打印获取后的文件数据
+ */
+    printf("文件数据: ");
+    for (size_t i = 0; i < 100 && i < strlen((char *)data); ++i) {
+        printf("%02x ", data[i]);
+    }
+    printf("\n");
+ 
+
+
     unsigned char hash[SHA_DIGEST_LENGTH];
     calculate_sha1(data, hash);//计算哈希值
 
@@ -131,7 +142,7 @@ int decompress_object(const char *object_path, unsigned char **output, size_t *o
     fread(compressed_data, 1, compressed_size, file);
     fclose(file);
 
-    uLongf decompressed_size = 1024 * 1024; // 初始分配解压后大小
+    uLongf decompressed_size = 2048 * 2048; // 初始分配解压后大小
     *output = (unsigned char *)malloc(decompressed_size);
 
     if (uncompress(*output, &decompressed_size, compressed_data, compressed_size) != Z_OK) {//将compressed_data解压到output
