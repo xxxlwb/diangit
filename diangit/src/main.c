@@ -19,6 +19,8 @@ typedef enum {
     checkout,
     branch,
     ls_tree,
+    tag,
+    show_refs,
     unknown
 } Command;
 
@@ -45,6 +47,10 @@ Command parse_args(int argc, char *argv[]) {
         return branch;
     } else if (strcmp(argv[1], "ls-tree") == 0) {
         return ls_tree;
+    } else if (strcmp(argv[1], "tag") == 0) {
+        return tag;
+    } else if (strcmp(argv[1], "show-refs") == 0) {
+        return show_refs;
     }
 
 
@@ -108,6 +114,13 @@ int main(int argc, char *argv[]) {
                 return EXIT_FAILURE;
             }
             ls_Tree(argv[2]);
+            break;
+        case tag:
+            
+            create_tag(argv[2], argv[3]);
+            break;
+        case show_refs:
+            Show_refs();
             break;
 
 

@@ -57,7 +57,7 @@ void get_current_time(char *buffer, size_t buffer_len) {
     fprintf(tree_file, "模式:100644 \n");//文件模式
     fprintf(tree_file, "filename: %s\n", filename);
     fprintf(tree_file, "tree %s\n", hash_str);
-fclose(tree_file);
+    fclose(tree_file);
     unsigned char *data = get_file_data(tree_object_path);//获取文件数据
     if (!data) {
         perror("获取文件数据失败");
@@ -112,10 +112,8 @@ void commit_(const char *message, const char *repo_dir) {
         fprintf(commit_file, "%02x", hash_str[i]);
     }
     fprintf(commit_file, "\n");
-
-    
-    
     fclose(commit_file);
+    
 
 
     /**

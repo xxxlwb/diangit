@@ -17,7 +17,7 @@
  */
 void ls_Tree(unsigned char *hash_str) {
     char object_path[1024];
-    snprintf(object_path, sizeof(object_path), ".git/objects/tree/tree_%s", hash_str);
+    snprintf(object_path, sizeof(object_path), ".git/objects/%.2s/%s", hash_str, hash_str + 2);
     unsigned char *decompressed_data = NULL;
     size_t decompressed_size = 0;
 
