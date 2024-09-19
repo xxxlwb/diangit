@@ -30,3 +30,5 @@ void create_branch(const char *branch_name);//创建分支 (refs/heads)
 void create_tag(const char *tag_name, const char *commit_hash);//创建标签 (refs/tags)
 
 void Show_refs();//显示所有 refs (show-ref)
+
+void Add(const char *filename);//将文件添加到暂存区

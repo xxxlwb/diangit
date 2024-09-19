@@ -21,6 +21,7 @@ typedef enum {
     ls_tree,
     tag,
     show_refs,
+    add,
     unknown
 } Command;
 
@@ -51,6 +52,8 @@ Command parse_args(int argc, char *argv[]) {
         return tag;
     } else if (strcmp(argv[1], "show-refs") == 0) {
         return show_refs;
+    } else if (strcmp(argv[1], "add") == 0) {
+        return add;
     }
 
 
@@ -122,6 +125,10 @@ int main(int argc, char *argv[]) {
         case show_refs:
             Show_refs();
             break;
+        case add:
+            Add(argv[2]);
+            break;
+
 
 
         case unknown:
