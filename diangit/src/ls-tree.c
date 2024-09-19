@@ -1,47 +1,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <errno.h>
-#include <sys/stat.h>
+#include <time.h>
 #include <openssl/sha.h>
 #include <zlib.h>
-#include "include.h"
-#include <stddef.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include "../include/include.h"
 
-// diangit ls-tree
-void ls_tree(const char *hash_str, const char *repo_dir) {
-    char tree_path[1024];
-    snprintf(tree_path, sizeof(tree_path), "%s/.git/objects/%.2s/%s", repo_dir, hash_str, hash_str + 2);
+/**
+ * @brief 解压tree对象
+ * @param object_path 对象路径
+ * @param output 输出数据
+ * @param output_len 输出数据长度
+ * @return int
+ */
+void ls_Tree(unsigned char *hash_str) {
+    char object_path[1024];
+    snprintf(object_path, sizeof(object_path), ".git/objects/tree/tree_%s", hash_str);
+    unsigned char *decompressed_data = NULL;
+    size_t decompressed_size = 0;
 
-    unsigned char *tree_data = NULL;
-    size_t tree_data_len = 0;
-    if (decompress_object(tree_path, &tree_data, &tree_data_len) != 0) {
-        perror("解压tree对象失败");
-        return;
+    if (decompress_object(object_path, &decompressed_data, &decompressed_size) == 0) {
+        // 确保 decompressed_data 非空并且 size 正确
+        if (decompressed_data) {
+            printf("解压后数据大小: %zu\n", decompressed_size);
+        //将解压后的数据转化为原来内容并打印输出
+        fwrite(decompressed_data, 1, decompressed_size, stdout);
+        printf("\n");
+        }
     }
 
-    Object *tree_obj = parse_object(tree_data);
-    if (!tree_obj) {
-        perror("解析tree对象失败");
-        free(tree_data);
-        return;
-    }
-
-    // 遍历tree对象的内容
-    char *content_ptr = tree_obj->content;
-    while (content_ptr < tree_obj->content + tree_obj->size) {
-        char mode[7];
-        char name[256];
-        char hash[SHA_DIGEST_LENGTH * 2 + 1];
-        size_t size;
-
-        sscanf(content_ptr, "%6s %255s %20s %zu", mode, name, hash, &size);
-
-        printf("%s %s %s %zu\n", mode, name, hash, size);
-        content_ptr += strlen(content_ptr) + 1; // 移动到下一个条目
-    }
-
-    free(tree_data);
-    free_object(tree_obj);
+    free(decompressed_data);
 }
+
+            
+ 

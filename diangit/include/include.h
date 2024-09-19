@@ -19,4 +19,11 @@ void log_history(const char *repo_dir);//输出日志文件中的每一行
  
 void commit_(const char *message, const char *repo_dir);//生成提交对象并写入对象目录
 
+unsigned char* create_tree_object(const char *filename, const char *hash_str);//
+
 void Checkout(const char *commit_hash);//checkout 命令
+
+void ls_Tree(unsigned char *hash_str);//解压tree对象
+
+void create_branch(const char *branch_name);//创建分支 (refs/heads)
+

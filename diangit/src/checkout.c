@@ -6,7 +6,7 @@
 #include <sys/stat.h>
 #include <openssl/sha.h>
 #include <zlib.h>
-#include "include.h"
+#include "../include/include.h"
 #define SHA_DIGEST_LENGTH 20
 // 解析提交对象并恢复文件状态
 
@@ -71,7 +71,7 @@ printf("File data: %p, Size: %zu\n", File_data, file_data_size); // 根据文件
         FILE *output_file = fopen(file_object_path, "w");
         fwrite(File_data, 1, file_data_size, output_file);
         fclose(output_file);
-        printf("成功切换到提交版本 %s\n", commit_hash);
+        printf("成功切换到指定版本 work.txt\n");
      
 
     free(commit_data);

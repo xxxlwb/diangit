@@ -6,7 +6,7 @@
 #include <zlib.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include "include.h"
+#include "../include/include.h"
 
 #define SHA_DIGEST_LENGTH 20
 
@@ -44,14 +44,35 @@ void get_current_time(char *buffer, size_t buffer_len) {
     fclose(file);
 }
 */
-// 创建commit对象
+ /**
+    * @brief 创建tree对象文件，记录提交的文件名字，模式，哈希值
+    */
+
+    unsigned char* create_tree_object(const char *filename, const char *hash_str) {
+    char tree_object_path[2048];
+    snprintf(tree_object_path, sizeof(tree_object_path), ".git/objects/tree/tree_%s", hash_str);
+    FILE *tree_file = fopen(tree_object_path, "wb");
+   
+
+    fprintf(tree_file, "模式:100644 \n");//文件模式
+    fprintf(tree_file, "filename: %s\n", filename);
+    fprintf(tree_file, "tree %s\n", hash_str);
+fclose(tree_file);
+    unsigned char *data = get_file_data(tree_object_path);//获取文件数据
+    if (!data) {
+        perror("获取文件数据失败");
+        return NULL;
+    }
+    
+    return data;
+}
 
 
 
 
 // 生成提交对象并写入对象目录
 void commit_(const char *message, const char *repo_dir) {
-    // 获取文件哈希值 (简单化为针对所有文件)
+    // 获取文件哈希值 (简单化为针对test文件)
     //unsigned char hash[SHA_DIGEST_LENGTH];
     const char *filename = "test.txt";
     unsigned char *data = get_file_data(filename);//获取文件数据
@@ -92,26 +113,34 @@ void commit_(const char *message, const char *repo_dir) {
     }
     fprintf(commit_file, "\n");
 
-    fclose(commit_file);
-    //生成commit对象，并压缩到.git/objects(用Blob对象代替)
     
-    unsigned char *git_object_data=get_file_data(commit_object_path);//获取文件数据
-    if (!git_object_data) {
-        perror("获取文件数据失败");
+    
+    fclose(commit_file);
+
+
+    /**
+     * @brief 创建tree对象文件，记录提交的文件名字，模式，哈希值
+     */
+    unsigned char *tree_data = create_tree_object(filename, hash_str);
+    if (!tree_data) {
+        perror("创建树对象文件失败");
         return;
     }
-
-    size_t total_len = create_git_object(data, &git_object_data);//创建Git对象格式
-    if (compress_and_store(hash_str, git_object_data) == -1) {//压缩并存储对象
+    //压缩并存储对象到.git/objects
+    unsigned char tree_hash[SHA_DIGEST_LENGTH];
+    calculate_sha1(tree_data, tree_hash);
+    char tree_hash_str[SHA_DIGEST_LENGTH * 2 + 1];
+    for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
+        sprintf(tree_hash_str + i * 2, "%02x", tree_hash[i]);
+    }
+    printf("tree哈希值: %s\n", tree_hash_str);
+    if (compress_and_store(tree_hash_str, tree_data) == -1) {
         perror("压缩和存储失败");
     }
-
-    free(git_object_data);
-    free(data);
-
-    
-    //解压缩
    
+    
+
+
 
 
     // 记录到日志文件
@@ -127,10 +156,11 @@ void commit_(const char *message, const char *repo_dir) {
     fprintf(log_file, "%s - commit: %s\n", time_str, message);
     fprintf(log_file, "File Hash: ");
     for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
-        fprintf(log_file, "%02x", hash_str[i]);
+        fprintf(log_file, "%02x", hash_str[i]);//直接输出哈希值，未转化为十六进制
     }
     fprintf(log_file,"\n");
     fclose(log_file);
 
     printf("提交成功: %s\n", message);
 }
+

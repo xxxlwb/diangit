@@ -5,7 +5,7 @@
 #include <errno.h> // 包含 errno 和 strerr
 #include <sys/stat.h> // 包含 stat 的头文件
 #include <stddef.h>//包含size_t
-#include "include.h"
+#include "../include/include.h"
 /**
  * @brief 初始化一个Git仓库
  * @param repo_dir 仓库目录
@@ -25,7 +25,7 @@ void init_repository(const char *repo_dir) {
 
     // 创建 .git 目录
     if (mkdir(dot_git_path, 0777) == -1) {
-        perror("无法创建 .git 目录");
+        perror("无法创建 .git 目录");//记录错误，便于调试
         return;
     }
 

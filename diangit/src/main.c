@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <errno.h> // 包含 errno 和 strerr
 #include <sys/stat.h> // 包含 stat 的头文件
-#include "include.h"
+#include "../include/include.h"
 /*
 @brief 定义命令枚举类型
 */ 
@@ -17,6 +17,8 @@ typedef enum {
     commit,
     logs,
     checkout,
+    branch,
+    ls_tree,
     unknown
 } Command;
 
@@ -39,7 +41,11 @@ Command parse_args(int argc, char *argv[]) {
         return logs;
     } else if (strcmp(argv[1], "checkout") == 0) {
         return checkout;
-    } 
+    } else if (strcmp(argv[1], "branch") == 0) {
+        return branch;
+    } else if (strcmp(argv[1], "ls-tree") == 0) {
+        return ls_tree;
+    }
 
 
     fprintf(stderr, "未知命令: %s\n", argv[1]);
@@ -88,6 +94,20 @@ int main(int argc, char *argv[]) {
                 return EXIT_FAILURE;
             }
             Checkout(argv[2]);
+            break;
+        case branch:    
+            if (argc < 3) {
+                fprintf(stderr, "错误: 请提供分支名\n");
+                return EXIT_FAILURE;
+            }
+            create_branch(argv[2]);
+            break;
+        case ls_tree:
+            if (argc < 3) {
+                fprintf(stderr, "错误: 请提供对象哈希值\n");
+                return EXIT_FAILURE;
+            }
+            ls_Tree(argv[2]);
             break;
 
 

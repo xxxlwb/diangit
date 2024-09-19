@@ -9,7 +9,7 @@
 #define SHA_DIGEST_LENGTH 20
 
 /**
- * @brief 接收文件名，获取文件数据的指针
+ * @brief 接收文件名，获取文件数据的指针,将文本内容转化为ASCII码
  * 
  */
 
