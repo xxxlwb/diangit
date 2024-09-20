@@ -5,21 +5,21 @@
 #include "../include/include.h"
 
 /**
- * @brief 移除暂存区文件
+ * @brief 移除暂存区内指定文件，将暂存区文件内容写入index.temp，利用continue语句跳过指定删除的文件
+ * @param fgets()函数从流中读取n-1个字符，保存到line指向的字符串中，遇到换行符或文件结束符时结束。
+ * @param sscanf()函数从一个字符串中读进与指定格式相符的数据
+ * @param continue语句结束当前循环，开始下一轮循环
+ * @param fopen()函数打开一个文件，返回一个指向FILE对象的指针
+ * @param remove()函数用于删除一个文件
+ * @param rename()函数用于修改文件名或移动文件
+ * @param fprintf()函数用于向文件中写入格式化数据
  */
 void remove_file_from_index(const char *filename) {
     FILE *index_file = fopen(".git/index", "rb");
-    if (!index_file) {
-        perror("无法打开索引文件");
-        return;
-    }
+ 
 
     FILE *temp_file = fopen(".git/index.temp", "wb");
-    if (!temp_file) {
-        perror("无法创建临时索引文件");
-        fclose(index_file);
-        return;
-    }
+   
 
     char line[1024];
     char file[1024];

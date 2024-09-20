@@ -22,6 +22,9 @@ typedef enum {
     tag,
     show_refs,
     add,
+    rm,
+    status,
+
     unknown
 } Command;
 
@@ -54,6 +57,10 @@ Command parse_args(int argc, char *argv[]) {
         return show_refs;
     } else if (strcmp(argv[1], "add") == 0) {
         return add;
+    } else if (strcmp(argv[1], "rm") == 0) {
+        return rm;
+    } else if (strcmp(argv[1], "status") == 0) {
+        return status;
     }
 
 
@@ -128,7 +135,12 @@ int main(int argc, char *argv[]) {
         case add:
             Add(argv[2]);
             break;
-
+        case rm:
+            remove_file_from_index(argv[2]);
+            break;
+        case status:
+            show_status();
+            break;
 
 
         case unknown:

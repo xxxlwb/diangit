@@ -19,7 +19,7 @@ void Add(const char *filename) {
         sprintf(hash_str + i * 2, "%02x", hash[i]);
     }
 
-    FILE *index_file = fopen(".git/index", "ab");
+    FILE *index_file = fopen(".git/index", "ab");//ab模式，追加写入,b模式，二进制文件,a模式，追加模式
     if (!index_file) {
         perror("无法打开索引文件");
         return;

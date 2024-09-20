@@ -32,3 +32,7 @@ void create_tag(const char *tag_name, const char *commit_hash);//创建标签 (r
 void Show_refs();//显示所有 refs (show-ref)
 
 void Add(const char *filename);//将文件添加到暂存区
+
+void remove_file_from_index(const char *filename);//移除暂存区内指定文件
+
+void show_status();//显示文件状态
