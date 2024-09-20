@@ -110,6 +110,7 @@ void commit_(const char *message, const char *repo_dir) {
     for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
         fprintf(commit_file, "%02x", hash_str[i]);
     }
+    fprintf(commit_file, "\n");
 // 读取并写入所有暂存区中的文件信息,step6补充
 FILE *index_file = fopen(".git/index", "r");//r模式，只读
     char line[1024];

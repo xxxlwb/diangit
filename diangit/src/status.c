@@ -3,7 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-
+#include "../include/include.h"
+#define SHA_DIGEST_LENGTH 20
 
 /**
  * @brief 检查文件是否在暂存区
@@ -31,7 +32,29 @@ int is_file_in_index(const char *filename) {
 }
 /**
  * @brief 检查文件是否被提交
+ * @param filename 文件名
+ * @param fgets()函数从流中读取n-1个字符，保存到line指向的字符串中，遇到换行符或文件结束符时结束。
  */
+int is_file_in_commit(const char *filename) {
+    
+    char commit_object_path[2048];
+    snprintf(commit_object_path, sizeof(commit_object_path), ".git/objects");
+
+    FILE *commit_file = fopen(commit_object_path, "r");
+   
+    char line[1024];
+    while (fgets(line, sizeof(line), commit_file)) {
+        if (strncmp(line, filename, strlen(filename)) == 0) {
+            fclose(commit_file);
+            return 1;  // 文件已提交
+        }
+    }
+
+    fclose(commit_file);
+    return 0;  // 文件未提交
+}
+
+
 
 /**
  * @brief 显示文件状态
@@ -60,6 +83,11 @@ void show_status() {
                 printf("暂存: %s\n", entry->d_name);
             } else {
                 printf("未暂存: %s\n", entry->d_name);
+            }
+            if (is_file_in_commit(entry->d_name)) {
+                printf("已提交: %s\n", entry->d_name);
+            } else {
+                printf("未提交: %s\n", entry->d_name);
             }
         
     }

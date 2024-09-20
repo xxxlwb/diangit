@@ -36,3 +36,5 @@ void Add(const char *filename);//将文件添加到暂存区
 void remove_file_from_index(const char *filename);//移除暂存区内指定文件
 
 void show_status();//显示文件状态
+
+void ls_files(int verbose);//

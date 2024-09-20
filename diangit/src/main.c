@@ -24,6 +24,8 @@ typedef enum {
     add,
     rm,
     status,
+    lsfiles,
+
 
     unknown
 } Command;
@@ -61,6 +63,8 @@ Command parse_args(int argc, char *argv[]) {
         return rm;
     } else if (strcmp(argv[1], "status") == 0) {
         return status;
+    } else if (strcmp(argv[1], "ls-files") == 0) {
+        return lsfiles;
     }
 
 
@@ -141,7 +145,24 @@ int main(int argc, char *argv[]) {
         case status:
             show_status();
             break;
+        case lsfiles:
+        
+           
 
+        int verbose = 0;
+        if (argc == 2) {
+            ls_files(verbose);
+            break;
+        } else if (argc == 3 && strcmp(argv[2], "--verbose") == 0) {
+            verbose = 1;
+        
+        ls_files(verbose);
+        break;
+        } else {
+            fprintf(stderr, "错误: 无效参数\n");
+            return EXIT_FAILURE;
+        }
+        break;
 
         case unknown:
             return EXIT_FAILURE;
