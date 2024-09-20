@@ -4,7 +4,6 @@
 #include <time.h>
 #include <openssl/sha.h>
 #include <zlib.h>
-#include <sys/stat.h>
 #include <unistd.h>
 #include "../include/include.h"
 

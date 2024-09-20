@@ -3,7 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
-#include <sys/stat.h>
+#include <sys/stat.h>//mkidr()函数
 #include <openssl/sha.h>
 #include <zlib.h>
 #define SHA_DIGEST_LENGTH 20
