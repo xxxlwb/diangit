@@ -10,7 +10,7 @@
 
 /**
  * @brief 接收文件名，获取文件数据的指针,将文本内容转化为ASCII码
- * 
+ * @param fread
  */
 
 unsigned char *get_file_data(const char *filename) {
@@ -24,7 +24,7 @@ unsigned char *get_file_data(const char *filename) {
     fseek(file, 0, SEEK_SET);//将文件指针移动到文件开头
 
     unsigned char *data = (unsigned char *)malloc(length);
-    if (fread(data, 1, length, file) != length) {//读取文件数据
+    if (fread(data, 1, length, file) != length) {//读取文件数据,fread()函数
         perror("无法读取文件");
         free(data);
         fclose(file);

@@ -43,6 +43,22 @@ argc记录命令行总共字符串个数 argv为字符串数组
 ### Linux环境
 wsl2 Ubuntu22.04
 # （三）
+snprintf()
+fopen()
+mkdir()
+perror()
+fprintf()
+SHA()
+fseek()
+fread()
+创建blob格式
+compress()
+uncompress()
+fwrite()
+time()
+localtime()
+
+
 
 # diangit
 编译命令gcc -g ./include/* ./src/* -o diangit -lssl -lcrypto -lz 
