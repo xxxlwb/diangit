@@ -34,6 +34,8 @@ diangit checkout b43a491cb9992bc70a4ce480f8769fa7dcae7a96
 
 diangit checkout 60fde9c2310b0d4cad4dab8d126b04387efba289
 
-diangit
+diangit status
+
+dian
 
 echo "work.txt" > .gitignore
