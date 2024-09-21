@@ -12,6 +12,25 @@
 // 创建标签 (refs/tags)
 void create_tag(const char *tag_name, const char *commit_hash) {
     char tag_path[1024];
+    struct stat st = {0};
+    if (stat(".git/refs", &st) == -1)
+    {
+        int ret = mkdir(".git/refs", 0777); // 创建目录
+        if (ret == -1)
+        {
+            perror("创建目录失败");
+            return;
+        }
+    }
+    if (stat(".git/refs/tags/", &st) == -1)
+    {
+        int ret = mkdir(".git/refs/tags/", 0777); // 创建目录
+        if (ret == -1)
+        {
+            perror("创建目录失败");
+            return;
+        }
+    }
     snprintf(tag_path, sizeof(tag_path), "%s%s", ".git/refs/tags/", tag_name);
 
     FILE *tag_file = fopen(tag_path, "w");
@@ -22,6 +41,11 @@ void create_tag(const char *tag_name, const char *commit_hash) {
 
     fprintf(tag_file, "%s\n", commit_hash);  // 写入提交哈希值
     fclose(tag_file);
+    if(commit_hash == NULL)
+    {
+        perror("缺少提交哈希值的参数");
+        return;
+    }
     printf("成功创建标签 '%s' 指向提交 %s\n", tag_name, commit_hash);
 }
 
