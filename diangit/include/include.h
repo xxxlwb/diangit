@@ -38,3 +38,5 @@ void remove_file_from_index(const char *filename);//移除暂存区内指定文�
 void show_status();//显示文件状态
 
 void ls_files(int verbose);//
+
+int check_ignore(const char *filename) ;//检查文件是否被.gitignore忽略

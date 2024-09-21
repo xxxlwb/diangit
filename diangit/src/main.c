@@ -25,7 +25,7 @@ typedef enum {
     rm,
     status,
     lsfiles,
-
+    checkignore,
 
     unknown
 } Command;
@@ -55,7 +55,7 @@ Command parse_args(int argc, char *argv[]) {
         return ls_tree;
     } else if (strcmp(argv[1], "tag") == 0) {
         return tag;
-    } else if (strcmp(argv[1], "show-refs") == 0) {
+    } else if (strcmp(argv[1], "show-ref") == 0) {
         return show_refs;
     } else if (strcmp(argv[1], "add") == 0) {
         return add;
@@ -65,6 +65,8 @@ Command parse_args(int argc, char *argv[]) {
         return status;
     } else if (strcmp(argv[1], "ls-files") == 0) {
         return lsfiles;
+    } else if (strcmp(argv[1], "check-ignore") == 0) {
+        return checkignore;
     }
 
 
@@ -146,9 +148,6 @@ int main(int argc, char *argv[]) {
             show_status();
             break;
         case lsfiles:
-        
-           
-
         int verbose = 0;
         if (argc == 2) {
             ls_files(verbose);
@@ -163,6 +162,17 @@ int main(int argc, char *argv[]) {
             return EXIT_FAILURE;
         }
         break;
+        case checkignore:
+            if (argc < 3) {
+                fprintf(stderr, "错误: 请提供文件名\n");
+                return EXIT_FAILURE;
+            }
+            if (check_ignore(argv[2])) {
+                printf("文件被忽略\n");
+            } else {
+                printf("文件未被忽略\n");
+            }
+            break;
 
         case unknown:
             return EXIT_FAILURE;
