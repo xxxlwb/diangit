@@ -18,7 +18,7 @@ void remove_file_from_index(const char *filename) {
     FILE *index_file = fopen(".git/index", "rb");
  
 
-    FILE *temp_file = fopen(".git/index.temp", "wb");
+    FILE *temp_file = fopen(".git/index.temp", "w+");
    
 
     char line[1024];

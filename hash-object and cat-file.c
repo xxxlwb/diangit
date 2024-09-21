@@ -47,7 +47,7 @@ int compress_and_store(const char *hash_str, const unsigned char *data, size_t l
     char file_path[2048];
     snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, hash_str + 2);
 
-    FILE *file = fopen(file_path, "wb");
+    FILE *file = fopen(file_path, "w+");
     if (!file) {
         perror("无法打开对象文件");
         return -1;

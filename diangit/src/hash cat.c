@@ -70,7 +70,13 @@ int compress_and_store(const char *hash_str, const unsigned char *data) {
     char file_path[2048];
     snprintf(file_path, sizeof(file_path), "%s/%s", dir_path, hash_str + 2);//创建文件路径
 
-    FILE *file = fopen(file_path, "wb");//打开文件
+    FILE *file = fopen(file_path, "w+");//打开文件
+    if(!file)
+    {
+        perror("无法打开文件");
+        printf("文件路径:%s\n",file_path);
+        return -1;
+    }
    
     uLongf compressed_length = compressBound(length);//计算压缩后的长度,compressBound()函数用于计算压缩后的长度
     unsigned char *compressed_data = (unsigned char *)malloc(compressed_length);//分配内存
@@ -81,7 +87,11 @@ int compress_and_store(const char *hash_str, const unsigned char *data) {
         fclose(file);
         return -1;
     } //压缩数据,compress()函数用于压缩数据,压缩到缓冲区compressed_data
-       
+    if(compressed_data==NULL)
+    {
+        perror("内存分配失败");
+        return -1;
+    }
     fwrite(compressed_data, 1, compressed_length, file);
     fclose(file);
     free(compressed_data);
