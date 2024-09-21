@@ -217,7 +217,7 @@ void commit_(const char *message, const char *repo_dir)
     char log_file_path[5096];
     snprintf(log_file_path, sizeof(log_file_path), "./.git/logs");
 
-    FILE *log_file = fopen(log_file_path, "w+");
+    FILE *log_file = fopen(log_file_path, "a");
     if (!log_file)
     {
         perror("无法打开日志文件");
@@ -229,7 +229,7 @@ void commit_(const char *message, const char *repo_dir)
     fprintf(log_file, "File Hash: ");
     for (int i = 0; i < SHA_DIGEST_LENGTH; i++)
     {
-        fprintf(log_file, "%02x", hash_str[i]); // 直接输出哈希值，未转化为十六进制
+        fprintf(log_file, "%02x", hash[i]); // 直接输出哈希值，未转化为十六进制
     }
     fprintf(log_file, "\n");
     fclose(log_file);

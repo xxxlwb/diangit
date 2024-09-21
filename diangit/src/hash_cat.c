@@ -139,6 +139,12 @@ void Hash_object(const char *filename) {
 
 int decompress_object(const char *object_path, unsigned char **output, size_t *output_len) {
     FILE *file = fopen(object_path, "rb");//打开文件
+    if(!file)
+    {
+        perror("无法打开对象文件");
+        printf("对象文件路径:%s\n",object_path);
+        return -1;
+    }
     
     fseek(file, 0, SEEK_END);
     long compressed_size = ftell(file);

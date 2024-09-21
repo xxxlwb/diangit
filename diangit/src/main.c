@@ -106,6 +106,7 @@ int main(int argc, char *argv[]) {
                 return EXIT_FAILURE;
             }
             commit_(argv[3], "./"); // 提交所有文件
+            Hash_object("test.txt");
             break;
         case logs:
             log_history("./"); // 默认为当前目录

@@ -10,9 +10,8 @@
             "request": "launch",
             "program": "/home/luwenbo/diangit/diangit/diangit",
             "args": [
-                "commit",
-                "-m",
-                "..."
+                "checkout",
+                "ea015338da0725c3c13ba152481282454c9bc1ce"
             ],
             "stopAtEntry": false,
             "cwd": "/home/luwenbo/try_1",
