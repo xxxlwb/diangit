@@ -8,6 +8,10 @@ diangit init
 
 diangit add test.txt
 
+diangit ls-files 
+
+diangit ls-files --verbose
+
 diangit commit -m "Initial commit"
 
 diangit log
@@ -36,6 +40,8 @@ diangit checkout 60fde9c2310b0d4cad4dab8d126b04387efba289
 
 diangit status
 
-dian
+diangit check-ignore test.txt
+
+diangit check-ignore work.txt
 
 echo "work.txt" > .gitignore
